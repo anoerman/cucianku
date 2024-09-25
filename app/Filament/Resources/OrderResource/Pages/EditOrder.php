@@ -13,7 +13,14 @@ class EditOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->hidden(function () {
+                    if (auth()->user()->roles[0]['id'] !== 1) {
+                        return true;
+                    }
+                    return false;
+                }),
         ];
     }
+
 }

@@ -148,7 +148,12 @@ class ViewOrder extends ViewRecord
                         ])
                 ]),
             EditAction::make()
-                ->icon('heroicon-o-pencil-square'),
+                ->icon('heroicon-o-pencil-square')
+                ->hidden(function ($data)  {
+                    if (auth()->user()->roles[0]['id'] !== 1) {
+                        return true;
+                    }
+                }),
         ];
     }
 
