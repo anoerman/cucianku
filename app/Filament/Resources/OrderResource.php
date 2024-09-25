@@ -7,7 +7,6 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Faker\Provider\Uuid;
 use Filament\Forms;
@@ -87,14 +86,15 @@ class OrderResource extends Resource
                 Section::make('Order Products')
                     ->icon('heroicon-o-rectangle-stack')
                     ->schema([
-                        Repeater::make('products')
+                        Repeater::make('details')
+                            ->relationship('details')
+                            ->addActionLabel('Add more product')
                             ->grid(2)
                             ->columns(4)
-                            ->addActionLabel('Add more product')
                             ->schema([
                                 Select::make('product_id')
                                     ->label('Product')
-                                    ->relationship('details.product', 'name')
+                                    ->relationship('product', 'name')
                                     ->getOptionLabelFromRecordUsing(fn(Product $q) => "{$q->name} [{$q->price}/{$q->unit}]")
                                     ->searchable(['name', 'price', 'unit'])
                                     ->columnSpan(3)

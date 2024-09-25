@@ -30,13 +30,13 @@ class OrderDetail extends Model
     }
 
     /**
-     * Get the product associated with the OrderDetail
+     * Get the product that owns the OrderDetail
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function product()
     {
-        return $this->hasOne(Product::class, 'id', 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     /**
