@@ -56,77 +56,13 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_id');
     }
 
-
-    public static function createOrder(array $data)
-    {
-        try {
-            DB::beginTransaction();
-            // Create order
-            $order = Order::create([
-                'order_code'     => Uuid::uuid(),
-                'order_date'     => $data['order_date'],
-                'customer_id'    => $data['customer_id'],
-                'status'         => $data['status'],
-                'discount_type'  => $data['discount_type'],
-                'discount_value' => $data['discount_value'],
-                'total_discount' => 0,
-                'subtotal_price' => 0,
-                'total_price'    => 0,
-                'remarks'        => $data['remarks'],
-                'worker_id'      => $data['worker_id'],
-            ]);
-            if (!$order) {
-                throw new \Exception("No order found!", 404);
-            }
-
-            $subtotal_price   = 0;
-            $product_inserted = 0;
-            if ($order) {
-                for ($i = 0; $i < count($data['products']); $i++) {
-                    $pid     = $data['products'][$i];
-                    $product = Product::find($pid['product_id']);
-                    if (!$product) {
-                        throw new \Exception("No product found with id " . $pid['product_id'] . "!", 404);
-                    }
-                    // Create order detail
-                    $order_detail = OrderDetail::create([
-                        'order_id'   => $order->id,
-                        'worker_id'  => $data['worker_id'],
-                        'product_id' => $pid['product_id'],
-                        'qty'        => $pid['qty'],
-                        'price'      => $product->price * $pid['qty'] ?? 0,
-                    ]);
-
-                    if ($order_detail) {
-                        $product_inserted++;
-                        $subtotal_price = $subtotal_price + $order_detail->price;
-                    }
-                }
-            }
-
-            if (count($data['products']) != $product_inserted) {
-                throw new \Exception("Failed to process some of the products!", 404);
-            }
-
-            // Update order
-            $discount = $order->discount_value;
-            if ($order->discount_type == 'percentage') {
-                $discount = $subtotal_price * ($order->discount_value / 100);
-            }
-            $order->total_discount = $discount;
-            $order->subtotal_price = $subtotal_price;
-            $order->total_price    = $subtotal_price - $discount;
-            $order->save();
-
-            DB::commit();
-            return $order;
-        } catch (\Throwable $th) {
-            DB::rollback();
-            return $th->getMessage() . "#" . $th->getLine();
-        }
-    }
-
-
+    /** 
+     * Get last n days income info
+     * 
+     * @param       int     $num_days
+     * @return      float
+     * 
+     */
     public static function getLastNDaysIncome(int $num_days = 7): float
     {
         $sd = '';
