@@ -44,7 +44,8 @@ class ProductResource extends Resource
                     ->required()
                     ->options([
                         'pcs' => 'Pcs',
-                        'kg' => 'Kg'
+                        'kg' => 'Kg',
+                        'package' => 'Package'
                     ])
                     ->default('kg')
                     ->searchable(),
