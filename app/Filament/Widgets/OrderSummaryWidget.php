@@ -9,17 +9,19 @@ class OrderSummaryWidget extends ChartWidget
 {
     protected static ?string $heading = 'Total Order Per Day';
     protected static ?string $maxHeight = '300px';
-    
+
     protected function getData(): array
     {
         // Get n days summary
         $num_days = 30;
-        $datas = Order::getLastNDaysSummary($num_days);
+        $datas    = Order::getLastNDaysSummary($num_days);
         return [
             'datasets' => [
                 [
-                    'label' => 'Order per day',
-                    'data' =>  $datas['data']
+                    'label'           => 'Order per day',
+                    'data'            => $datas['data'],
+                    'backgroundColor' => 'green',
+                    'borderColor'     => 'green',
                 ],
             ],
             'labels' => $datas['labels']
