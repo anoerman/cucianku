@@ -19,7 +19,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Str;
 
 class OrderResource extends Resource
 {
@@ -65,7 +67,8 @@ class OrderResource extends Resource
                             ->searchable()
                             ->placeholder('Search worker name')
                             ->relationship('worker', 'name')
-                            ->preload(),
+                            ->preload()
+                            ->default(Auth::user()->id),
                         Forms\Components\Textarea::make('remarks')
                             ->columnSpanFull(),
                     ]),
@@ -134,6 +137,7 @@ class OrderResource extends Resource
                         'ready' => 'info',
                         'done' => 'success',
                     })
+                    ->formatStateUsing(fn (string $state) => Str::title($state))
                     ->sortable(),
                 TextColumn::make('discount_type')
                     ->toggleable(isToggledHiddenByDefault: true),

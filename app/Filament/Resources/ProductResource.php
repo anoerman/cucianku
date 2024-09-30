@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -66,6 +67,7 @@ class ProductResource extends Resource
                     ->money('IDR')
                     ->sortable(),
                 TextColumn::make('unit')
+                    ->formatStateUsing(fn(string $state) => Str::title($state))
                     ->searchable(),
                 TextColumn::make('description')
             ])
